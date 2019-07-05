@@ -25,6 +25,9 @@ RNUSBPrinter.printBillTextWithCut("<C>这是一段打印测试文字</C>")
 RNUSBPrinter.printBillTextWithCut("<M>这是一段打印测试文字</M>")
 RNUSBPrinter.printBillTextWithCut("<CM>这是一段打印测试文字</CM>")
 
+//sample code for print image
+RNUSBPrinter.printPic(base64JpgLogo, { width: 200, left: 180});
+
 ```
 
 ## Example
