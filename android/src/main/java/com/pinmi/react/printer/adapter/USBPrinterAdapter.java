@@ -17,7 +17,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.pinmi.react.printer.escpos.command.sdk.Command;
@@ -38,7 +37,6 @@ import javax.annotation.Nullable;
 public class USBPrinterAdapter {
     private static USBPrinterAdapter mInstance;
 
-
     private String LOG_TAG = "RNUSBPrinter";
     private Context mContext;
     private UsbManager mUSBManager;
@@ -51,7 +49,6 @@ public class USBPrinterAdapter {
 
     public static final int WIDTH_58 = 384;
     private int deviceWidth = WIDTH_58;
-
 
     private USBPrinterAdapter() {
     }
@@ -71,7 +68,9 @@ public class USBPrinterAdapter {
                 synchronized (this) {
                     UsbDevice usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        Log.i(LOG_TAG, "success to grant permission for device " + usbDevice.getDeviceId() + ", vendor_id: " + usbDevice.getVendorId() + " product_id: " + usbDevice.getProductId());
+                        Log.i(LOG_TAG,
+                                "success to grant permission for device " + usbDevice.getDeviceId() + ", vendor_id: "
+                                        + usbDevice.getVendorId() + " product_id: " + usbDevice.getProductId());
                         mUsbDevice = usbDevice;
                     } else {
                         Toast.makeText(context, "用户拒绝获取USB设备权限" + usbDevice.getDeviceName(), Toast.LENGTH_LONG).show();
@@ -79,6 +78,7 @@ public class USBPrinterAdapter {
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 if (mUsbDevice != null) {
+                    mUsbDevice = null;
                     Toast.makeText(context, "USB设备已经被关闭", Toast.LENGTH_LONG).show();
                     closeConnectionIfExists();
                 }
@@ -95,7 +95,6 @@ public class USBPrinterAdapter {
         mContext.registerReceiver(mUsbDeviceReceiver, filter);
         Log.v(LOG_TAG, "RNUSBPrinter initialized");
     }
-
 
     public void closeConnectionIfExists() {
         if (mUsbDeviceConnection != null) {
@@ -122,7 +121,8 @@ public class USBPrinterAdapter {
             List<UsbDevice> usbDevices = getDeviceList();
             for (UsbDevice usbDevice : usbDevices) {
                 if ((usbDevice.getVendorId() == vendorId) && (usbDevice.getProductId() == productId)) {
-                    Log.v(LOG_TAG, "request for device: vendor_id: " + usbDevice.getVendorId() + ", product_id: " + usbDevice.getProductId());
+                    Log.v(LOG_TAG, "request for device: vendor_id: " + usbDevice.getVendorId() + ", product_id: "
+                            + usbDevice.getProductId());
                     closeConnectionIfExists();
                     mUSBManager.requestPermission(usbDevice, mPermissionIndent);
                     return true;
@@ -233,7 +233,7 @@ public class USBPrinterAdapter {
                         leftPadding = options.hasKey("left") ? options.getInt("left") : 0;
                     }
 
-                    //cannot larger then devicesWith;
+                    // cannot larger then devicesWith;
                     if (width > deviceWidth || width == 0) {
                         width = deviceWidth;
                     }
@@ -243,13 +243,9 @@ public class USBPrinterAdapter {
                     int nMode = 0;
                     if (mBitmap != null) {
                         /**
-                         * Parameters:
-                         * mBitmap  要打印的图片
-                         * nWidth   打印宽度（58和80）
-                         * nMode    打印模式
-                         * Returns: byte[]
+                         * Parameters: mBitmap 要打印的图片 nWidth 打印宽度（58和80） nMode 打印模式 Returns: byte[]
                          */
-//                         PrintPicture.resizeImage(mBitmap, 200, 200);
+                        // PrintPicture.resizeImage(mBitmap, 200, 200);
                         byte[] data = PrintPicture.POS_PrintBMP(mBitmap, width, nMode, leftPadding);
                         int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, data, data.length, 100000);
                         Log.i(LOG_TAG, "Return Status: b-->" + b);
