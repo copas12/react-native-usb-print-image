@@ -34,7 +34,7 @@ var printBillTextWithCut = (billText) => {
 var printPic = (billText, size) => {
   let options = {
     beep: true, 
-    cut: true, 
+    cut: false, 
     encoding: 'GBK',
     tailingLine: true
   }
